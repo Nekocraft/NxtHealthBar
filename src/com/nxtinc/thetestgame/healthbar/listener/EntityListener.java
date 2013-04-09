@@ -1,5 +1,6 @@
 package com.nxtinc.thetestgame.healthbar.listener;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -10,7 +11,12 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 
 import com.nxtinc.thetestgame.healthbar.PluginMain;
 
@@ -36,6 +42,13 @@ public class EntityListener implements Listener {
 			}			
 		}
 	}
+	
+	@EventHandler
+	public void OnPlayerJoin(PlayerJoinEvent event)
+	{
+		Player player = event.getPlayer();	
+		displayPlayerHealth(player);
+	}
 
 	@EventHandler(ignoreCancelled=true)
 	public void onEntityDamageEvent(EntityDamageEvent event)
@@ -43,18 +56,26 @@ public class EntityListener implements Listener {
 		Entity entity = event.getEntity();
 		if ((entity instanceof LivingEntity)) 
 		{
-			if (plugin.isValidMob(entity))
+			if (entity instanceof Player)
 			{
-				LivingEntity mob = (LivingEntity)entity;
-				String mobName = mob.getCustomName();
-				if (mobName == null) 
+				Player player = (Player) entity;
+				displayPlayerHealth(player);
+			}
+			else
+			{
+				if (plugin.isValidMob(entity))
 				{
-					displayMobHealth(mob);
-					return;
-				}
-				if ((mobName.contains("█")) || (mobName.contains("▌"))|| (mobName.contains("||")) || (mobName.contains("|")) || (mobName.contains("/"))) {
-					displayMobHealth(mob);
-					return;
+					LivingEntity mob = (LivingEntity)entity;
+					String mobName = mob.getCustomName();
+					if (mobName == null) 
+					{
+						displayMobHealth(mob);
+						return;
+					}
+					if ((mobName.contains("█")) || (mobName.contains("▌"))|| (mobName.contains("||")) || (mobName.contains("|")) || (mobName.contains("/"))) {
+						displayMobHealth(mob);
+						return;
+					}
 				}
 			}
 		}
@@ -130,18 +151,47 @@ public class EntityListener implements Listener {
 		}
 	    return temp;
 	}
+	
+	private void displayPlayerHealth(Player player)
+	{
+		ScoreboardManager manager = Bukkit.getScoreboardManager();
+		Scoreboard board = manager.getNewScoreboard();
+		board.registerNewObjective("showhealth", "health");
+		board.registerNewObjective("healthui", "health");
+		if (plugin.getConfig().getBoolean("playerhealth",false))
+		{
+			Objective objective = board.getObjective("showhealth");
+			objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
+			objective.setDisplayName("/ 20");
+		}
+		
+		if (plugin.getConfig().getBoolean("healthinterface",false))
+		{
+			
+			Objective objective = board.getObjective("healthui");
+		    objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+		    objective.setDisplayName("Health");
+		    Score score = objective.getScore(Bukkit.getOfflinePlayer(ChatColor.GREEN + "Health:"));
+		    //score.setScore(player.getHealth());
+		}
+		
+		player.setScoreboard(board);
+	}
 
 	private void displayMobHealth(final LivingEntity mob)
 	{
-		final int health = mob.getHealth();
-	
-		if (health == 0) {
-			mob.setCustomName("");
-			mob.setCustomNameVisible(false);
-			return;
+		if (plugin.getConfig().getBoolean("mobhealth",false))
+		{
+			final int health = mob.getHealth();
+		
+			if (health == 0) {
+				mob.setCustomName("");
+				mob.setCustomNameVisible(false);
+				return;
+			}
+			int maxHealth = mob.getMaxHealth();
+			mob.setCustomName(EntityListener.getDisplayString(health,maxHealth));
+			mob.setCustomNameVisible(!(plugin.getConfig().getBoolean("hide")));
 		}
-		int maxHealth = mob.getMaxHealth();
-		mob.setCustomName(EntityListener.getDisplayString(health,maxHealth));
-		mob.setCustomNameVisible(!(plugin.getConfig().getBoolean("hide")));
 	}
 }

@@ -4,6 +4,12 @@ hide: false
 style: 1
 #Send Metrics info
 metrics: true
+#Mob health bars
+mobhealth: true
+#Player health bar
+playerhealth: false
+#Player Health Interface
+healthinterface: false
 #Mobs that have a health bar
 displayfor:
 - ZOMBIE

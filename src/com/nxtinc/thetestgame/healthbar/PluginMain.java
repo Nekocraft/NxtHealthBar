@@ -110,6 +110,9 @@ public class PluginMain extends JavaPlugin{
 		if (!config.isSet("hide")) config.set("hide", false);
 		if (!config.isSet("style")) config.set("style", 1);
 	    if (!config.isSet("metrics")) config.set("metrics", true);
+	    if (!config.isSet("mobhealth")) config.set("mobhealth", true);
+	    if (!config.isSet("playerhealth")) config.set("playerhealth", false);
+	    if (!config.isSet("healthinterface")) config.set("healthinterface", false);
 	    
 	    List<String> mobs = new ArrayList<String>();
 	    mobs.add("ZOMBIE");
