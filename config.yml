@@ -1,0 +1,13 @@
+#Hide if not attacked 
+hide: false
+#Health bar style
+style: 1
+#Send Metrics info
+metrics: true
+#Mobs that have a health bar
+displayfor:
+- ZOMBIE
+- CREEPER
+- SKELETON
+- SPIDER
+- ENDERMAN
