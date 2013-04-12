@@ -39,13 +39,17 @@ public class EntityListener implements Listener {
         //This should be a StringBuilder for a better performance
         String temp = getColor(health) + "";
         if (plugin.getConfig().getInt("style", 1) == 3) {
-            temp = health + "" + ChatColor.BLACK + "/" + ChatColor.GREEN + max;
+            temp = String.format("%s%s/%s%s", health, ChatColor.BLACK, ChatColor.GREEN, max);
+        } else if (plugin.getConfig().getInt("style", 1) == 4) {
+            for (int i = 1; i <= health; i++) {
+                temp += "❤";
+            }
         } else {
             for (int i = 1; i <= health; i++) {
                 if (plugin.getConfig().getInt("style", 1) == 1) {
-                    temp = temp + "▌";
+                    temp += "▌";
                 } else if (plugin.getConfig().getInt("style", 1) == 2) {
-                    temp = temp + "|";
+                    temp += "|";
                 }
             }
         }
@@ -78,7 +82,7 @@ public class EntityListener implements Listener {
                 final LivingEntity mob = (LivingEntity) entity;
                 final String mobName = mob.getCustomName();
 
-                if ((mobName == null) || (mobName.contains("█")) || (mobName.contains("▌")) || (mobName.contains("||")) || (mobName.contains("|")) || (mobName.contains("/"))) {
+                if ((mobName == null) || (mobName.contains("█")) || (mobName.contains("▌")) || (mobName.contains("||")) || (mobName.contains("|")) || (mobName.contains("/")) || (mobName.contains("❤"))) {
                     displayMobHealth(mob);
                     return;
                 }
@@ -94,7 +98,7 @@ public class EntityListener implements Listener {
             final LivingEntity mob = (LivingEntity) entity;
             final String mobName = mob.getCustomName();
 
-            if ((mobName == null) || (mobName.contains("█")) || (mobName.contains("▌")) || (mobName.contains("||")) || (mobName.contains("|")) || (mobName.contains("/"))) {
+            if ((mobName == null) || (mobName.contains("█")) || (mobName.contains("▌")) || (mobName.contains("||")) || (mobName.contains("|")) || (mobName.contains("/")) || (mobName.contains("❤"))) {
                 displayMobHealth(mob);
                 return;
             }
