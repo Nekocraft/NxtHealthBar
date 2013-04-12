@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 
 public class CommandExtender implements CommandExecutor {
 
-    PluginMain plugin;
+    private PluginMain plugin;
 
     public CommandExtender(PluginMain plugin) {
         this.plugin = plugin;
@@ -22,13 +22,13 @@ public class CommandExtender implements CommandExecutor {
                     if (sender instanceof Player) {
                         Player player = (Player) sender;
                         if (plugin.hasPermision(player, "nxthealthbar.op") || player.isOp()) {
-                            plugin.Reload();
+                            plugin.reload();
                             sender.sendMessage(ChatColor.GREEN + "Reloaded!");
                             return true;
                         }
                     } else {
                         sender.sendMessage("Reloading");
-                        plugin.Reload();
+                        plugin.reload();
                         sender.sendMessage("Reloaded!");
                         return true;
                     }

@@ -17,30 +17,30 @@ import org.mcstats.Metrics;
 
 public class PluginMain extends JavaPlugin {
 
-    private static final Logger log = Logger.getLogger("Minecraft");
-    public boolean UsingVault = false;
-    public static Permission permission = null;
+    private static final Logger LOG = Logger.getLogger("Minecraft");
+    private Permission permission = null;
+    private boolean UsingVault = false;
 
     public void info(String text) {
-        log.info("[NxtHealthBar] " + text);
+        LOG.info(String.format("[NxtHealthBar] %s", text));
     }
 
     public void severe(String text) {
-        log.severe("[NxtHealthBar] " + text);
+        LOG.severe(String.format("[NxtHealthBar] %s", text));
     }
 
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
         setDefaultConfigs(this.getConfig());
-        PluginManager pm = getServer().getPluginManager();
+        final PluginManager pm = getServer().getPluginManager();
         if (pm.getPlugin("Vault") != null) {
             setupPermissions();
             this.UsingVault = true;
         }
         if (this.getConfig().getBoolean("metrics", true)) {
             try {
-                Metrics metrics = new Metrics(this);
+                final Metrics metrics = new Metrics(this);
                 info("- Metrics Enabled!");
                 metrics.start();
             } catch (IOException e) {}
@@ -49,39 +49,45 @@ public class PluginMain extends JavaPlugin {
         pm.registerEvents(new EntityListener(this), this);
         pm.registerEvents(new DeathListener(this), this);
         //* Commands
-        CommandExtender extender = new CommandExtender(this);
+        final CommandExtender extender = new CommandExtender(this);
         this.getCommand("nhb").setExecutor(extender);
         info("Enabled");
     }
 
-    public void OnDisable() {
+    @Override
+    public void onDisable() {
         info("Disabled");
     }
 
-    public void Reload() {
+    public void reload() {
         this.reloadConfig();
     }
 
     private boolean setupPermissions() {
-        RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+        final RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+
         if (permissionProvider != null) {
             permission = permissionProvider.getProvider();
         }
+
         return (permission != null);
     }
 
-    public boolean hasPermision(Player player, String perm) {
-        if (this.UsingVault) {
+    public boolean hasPermision(final Player player, final String perm) {
+
+        if ((this.UsingVault) && (this.permission != null)) {
+
             if (player.hasPermission(perm) || permission.has(player, perm)) {
                 return true;
             }
+
             return false;
         } else {
             return player.hasPermission(perm);
         }
     }
 
-    private void setDefaultConfigs(FileConfiguration config) {
+    private void setDefaultConfigs(final FileConfiguration config) {
         if (!config.isSet("hide")) {
             config.set("hide", false);
         }
@@ -101,7 +107,7 @@ public class PluginMain extends JavaPlugin {
             config.set("healthinterface", false);
         }
 
-        List<String> mobs = new ArrayList<String>();
+        final List<String> mobs = new ArrayList<String>(5);
         mobs.add("ZOMBIE");
         mobs.add("CREEPER");
         mobs.add("SKELETON");
@@ -114,10 +120,10 @@ public class PluginMain extends JavaPlugin {
         saveConfig();
     }
 
-    public boolean isValidMob(Entity entity) {
-        List<String> mobs = this.getConfig().getStringList("displayfor");
-        if (mobs.size() > 0) {
-            for (int i = 0; i + 1 <= mobs.size(); i++) {
+    public boolean isValidMob(final Entity entity) {
+        final List<String> mobs = this.getConfig().getStringList("displayfor");
+        if (!mobs.isEmpty()) {
+            for (int i = 0; i < mobs.size(); i++) {
                 if (entity.getType().toString().equals(mobs.get(i))) {
                     return true;
                 }
