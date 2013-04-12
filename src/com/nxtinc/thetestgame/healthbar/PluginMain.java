@@ -4,12 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-
 import net.milkbowl.vault.permission.Permission;
-
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -22,43 +19,43 @@ import com.nxtinc.thetestgame.healthbar.listener.EntityListener;
 
 public class PluginMain extends JavaPlugin{
     private static final Logger log = Logger.getLogger("Minecraft");
-    
+
     public boolean UsingVault = false;
-    
+
     public static Permission permission = null;
 
     public void info(String text)
     {
     	log.info("[NxtHealthBar] " + text);
     }
-    
+
     public void severe(String text)
     {
-    	log.severe("[NxtHealthBar] " + text);    
+    	log.severe("[NxtHealthBar] " + text);
     }
-    
+
 	@Override
 	public void onEnable()
 	{
 		this.saveDefaultConfig();
 		setDefaultConfigs(this.getConfig());
 		PluginManager pm = getServer().getPluginManager();
-        if (pm.getPlugin("Vault") != null) 
+        if (pm.getPlugin("Vault") != null)
         {
             setupPermissions();
             this.UsingVault = true;
         }
         if (this.getConfig().getBoolean("metrics",true))
         {
-	        try 
+	        try
 	        {
 	            Metrics metrics = new Metrics(this);
 	            info("- Metrics Enabled!");
 	            metrics.start();
-	        } 
-	        catch (IOException e) 
+	        }
+	        catch (IOException e)
 	        {
-	        	
+
 	        }
         }
 		//* Events
@@ -69,17 +66,17 @@ public class PluginMain extends JavaPlugin{
 		this.getCommand("nhb").setExecutor(extender);
 		info("Enabled");
 	}
-	
+
 	public void OnDisable()
 	{
 		info("Disabled");
 	}
-	
+
 	public void Reload()
 	{
 		this.reloadConfig();
 	}
-	
+
     private boolean setupPermissions()
     {
         RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
@@ -104,7 +101,7 @@ public class PluginMain extends JavaPlugin{
 			return player.hasPermission(perm);
 		}
 	}
-	
+
 	private void setDefaultConfigs(FileConfiguration config)
 	{
 		if (!config.isSet("hide")) config.set("hide", false);
@@ -113,18 +110,18 @@ public class PluginMain extends JavaPlugin{
 	    if (!config.isSet("mobhealth")) config.set("mobhealth", true);
 	    if (!config.isSet("playerhealth")) config.set("playerhealth", false);
 	    if (!config.isSet("healthinterface")) config.set("healthinterface", false);
-	    
+
 	    List<String> mobs = new ArrayList<String>();
 	    mobs.add("ZOMBIE");
 	    mobs.add("CREEPER");
 	    mobs.add("SKELETON");
 	    mobs.add("SPIDER");
 	    mobs.add("ENDERMAN");
-	    
+
 	    if (!config.isSet("displayfor")) config.set("displayfor", mobs);
 	    saveConfig();
 	}
-	
+
 	public boolean isValidMob(Entity entity)
 	{
 		List<String> mobs = this.getConfig().getStringList("displayfor");

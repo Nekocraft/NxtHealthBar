@@ -1,30 +1,26 @@
 package com.nxtinc.thetestgame.healthbar.listener;
 
-import java.util.regex.Pattern;
 
+import com.nxtinc.thetestgame.healthbar.PluginMain;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-import com.nxtinc.thetestgame.healthbar.PluginMain;
-
 public class DeathListener implements Listener{
 
 	private PluginMain plugin;
-	
+
 	public DeathListener(PluginMain plugin)
 	{
 		this.plugin = plugin;
 	}
-	
+
 	@EventHandler
 	public void onPlayerDeathEvent(PlayerDeathEvent event)
 	{
@@ -56,7 +52,7 @@ public class DeathListener implements Listener{
 						plugin.info(temp);
 						deathmsg = deathmsg + " " + temp;
 					}
-					
+
 					if (deathmsg != null)
 					{
 						event.setDeathMessage(deathmsg);
@@ -71,7 +67,7 @@ public class DeathListener implements Listener{
 					{
 						deathmsg = deathmsg + deathwords[i];
 					}
-					
+
 					event.setDeathMessage(deathmsg);
 					return;
 				}
