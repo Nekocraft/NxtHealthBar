@@ -13,56 +13,62 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 
 public class DeathListener implements Listener {
 
-    private PluginMain plugin;
+    private final PluginMain plugin;
 
-    public DeathListener(PluginMain plugin) {
-        this.plugin = plugin;
+    public DeathListener(final PluginMain instance) {
+        this.plugin = instance;
     }
 
     @EventHandler
-    public void onPlayerDeathEvent(PlayerDeathEvent event) {
+    public void onPlayerDeathEvent(final PlayerDeathEvent event) {
         try {
-            String deathMessage = event.getDeathMessage();
-            String victim = event.getEntity().getName();
-            EntityDamageEvent damageEvent = event.getEntity().getLastDamageCause();
+            final String deathMessage = event.getDeathMessage();
+            final String victim = event.getEntity().getName();
+            final EntityDamageEvent damageEvent = event.getEntity().getLastDamageCause();
+
             if ((damageEvent instanceof EntityDamageByEntityEvent)) {
-                Entity damager = ((EntityDamageByEntityEvent) damageEvent).getDamager();
-                String[] deathwords = deathMessage.split(" ");
-                if (damager != null) {
+                final Entity damager = ((EntityDamageByEntityEvent) damageEvent).getDamager();
+                final String[] deathwords = deathMessage.split(" ");
+
+                if (damager == null) {
+                    deathwords[1] = victim;
+                    String deathmsg = null;
+                    for (int i = 0; i + 1 <= deathwords.length; i++) {
+                        deathmsg += deathwords[i];
+                    }
+
+                    event.setDeathMessage(deathmsg);
+                    return;
+
+                } else {
                     String deathmsg = victim;
+                    //Here should you use a StringBuilder
                     deathmsg = deathmsg + " " + deathwords[1] + " " + deathwords[2] + " " + deathwords[3];
                     if ((damager instanceof Player)) {
                         deathwords[4] = ((Player) damager).getName();
-                        deathmsg = deathmsg + " " + deathwords[4];
+                        deathmsg = String.format("%s %s", deathmsg, deathwords[4]);
                         if (deathwords.length > 5) {
                             for (int i = 5; i <= (deathwords.length - 5); i++) {
                                 deathmsg = deathmsg + "" + deathwords[i];
                             }
                         }
                     }
+
                     if ((damager instanceof LivingEntity)) {
-                        String temp = WordUtils.capitalizeFully(damager.getType().toString());
+                        final String temp = WordUtils.capitalizeFully(damager.getType().toString());
                         plugin.info(temp);
-                        deathmsg = deathmsg + " " + temp;
+                        deathmsg = String.format("%s %s", deathmsg, temp);
                     }
 
                     if (deathmsg != null) {
                         event.setDeathMessage(deathmsg);
                         return;
                     }
-                } else {
-                    deathwords[1] = victim;
-                    String deathmsg = null;
-                    for (int i = 0; i + 1 <= deathwords.length; i++) {
-                        deathmsg = deathmsg + deathwords[i];
-                    }
 
-                    event.setDeathMessage(deathmsg);
-                    return;
                 }
             }
         } catch (Exception e) {
-            event.setDeathMessage(event.getEntity().getName() + " died");
+            event.setDeathMessage(String.format("%s died", event.getEntity().getName()));
         }
     }
 }

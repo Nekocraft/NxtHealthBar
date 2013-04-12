@@ -59,10 +59,6 @@ public class PluginMain extends JavaPlugin {
         info("Disabled");
     }
 
-    public void reload() {
-        this.reloadConfig();
-    }
-
     private boolean setupPermissions() {
         final RegisteredServiceProvider<Permission> permissionProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
 
