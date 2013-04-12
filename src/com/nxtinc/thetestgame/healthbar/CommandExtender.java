@@ -8,46 +8,45 @@ import org.bukkit.entity.Player;
 
 public class CommandExtender implements CommandExecutor {
 
-    private PluginMain plugin;
+    private final PluginMain plugin;
 
-    public CommandExtender(PluginMain plugin) {
-        this.plugin = plugin;
+    public CommandExtender(final PluginMain instance) {
+        this.plugin = instance;
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (cmd.getName().equalsIgnoreCase("nhb")) {
-            if (args.length > 0) {
-                if (args[0].equals("reload")) {
-                    if (sender instanceof Player) {
-                        Player player = (Player) sender;
-                        if (plugin.hasPermision(player, "nxthealthbar.op") || player.isOp()) {
-                            plugin.reload();
-                            sender.sendMessage(ChatColor.GREEN + "Reloaded!");
-                            return true;
-                        }
-                    } else {
-                        sender.sendMessage("Reloading");
-                        plugin.reload();
-                        sender.sendMessage("Reloaded!");
+    public boolean onCommand(final CommandSender sender, final Command cmd, final String label, final String[] args) {
+        // if (cmd.getName().equalsIgnoreCase("nhb")) { It will be every time nhb because this commancexecutor is only registered on that command
+        if (args.length > 0) {
+            if (args[0].equalsIgnoreCase("reload")) { //IgnoreCase is more user-friendlier
+                if (sender instanceof Player) {
+                    final Player player = (Player) sender;
+                    if (plugin.hasPermision(player, "nxthealthbar.op")) { //Is Op isn't longer needed because this permission is set as default for op's in the plugin.yml
+                        plugin.reloadConfig();
+                        sender.sendMessage(ChatColor.GREEN + "Reloaded!");
                         return true;
                     }
-                } else if (args[0].equals("version")) {
-                    if (sender instanceof Player) {
-                        Player player = (Player) sender;
-                        if (plugin.hasPermision(player, "nxthealthbar.op") || player.isOp()) {
-                            sender.sendMessage(ChatColor.GREEN + "Version : " + plugin.getDescription().getVersion());
-                            return true;
-                        }
-                    } else {
-                        sender.sendMessage(ChatColor.GREEN + "Version : " + plugin.getDescription().getVersion());
-                        return true;
-                    }
+                } else {
+                    sender.sendMessage("Reloading");
+                    plugin.reloadConfig();
+                    sender.sendMessage("Reloaded!");
+                    return true;
                 }
-            } else {
-                sender.sendMessage(ChatColor.RED + "Valid sub commands");
-                sender.sendMessage(ChatColor.RED + "reload, version");
+            } else if (args[0].equalsIgnoreCase("version")) {
+                if (sender instanceof Player) {
+                    final Player player = (Player) sender;
+                    if (plugin.hasPermision(player, "nxthealthbar.op")) {
+                        sender.sendMessage(String.format("%sVersion : %s", ChatColor.GREEN, plugin.getDescription().getVersion())); //String.format is gives your plugin a higher performance than adding String with +
+                        return true;
+                    }
+                } else {
+                    sender.sendMessage(String.format("%sVersion : %s", ChatColor.GREEN, plugin.getDescription().getVersion()));
+                    return true;
+                }
             }
+        } else {
+            sender.sendMessage(String.format("%sValid sub commands", ChatColor.RED));
+            sender.sendMessage(String.format("%sreload, version", ChatColor.RED));
         }
         return false;
     }
