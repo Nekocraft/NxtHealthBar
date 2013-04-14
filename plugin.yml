@@ -1,6 +1,6 @@
 name: NxtHealthBar
 version: 1.2.0
-description: Simple Mob Health Bar
+description: 简单的怪物生命条
 author: Thetestgame
 authors: [Thetestgame]
 main: com.nxtinc.thetestgame.healthbar.PluginMain
@@ -8,13 +8,12 @@ softdepend: [Vault]
 
 commands:
    nhb:
-      description: Base Nxt Book admin Command
+      description: 基本Nxt管理员指令
       usage: /<command> [Sub Command]
       permission: nxthealtbar.op
-      permission-message: You don't have permission
-      
+      permission-message: 你没有足够的权限
+
 permissions:  
     nxthealthbar.op:
-        description: Allows the user to use /nhb
+        description: 允许用户使用 /nhb
         default: op 
-      

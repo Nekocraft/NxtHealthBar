@@ -23,29 +23,29 @@ public class CommandExtender implements CommandExecutor {
                     final Player player = (Player) sender;
                     if (plugin.hasPermision(player, "nxthealthbar.op")) { //Is Op isn't longer needed because this permission is set as default for op's in the plugin.yml
                         plugin.reloadConfig();
-                        sender.sendMessage(ChatColor.GREEN + "Reloaded!");
+                        sender.sendMessage(ChatColor.GREEN + "重新载入完毕!");
                         return true;
                     }
                 } else {
-                    sender.sendMessage("Reloading");
+                    sender.sendMessage("重新载入中");
                     plugin.reloadConfig();
-                    sender.sendMessage("Reloaded!");
+                    sender.sendMessage("重新载入完毕!");
                     return true;
                 }
             } else if (args[0].equalsIgnoreCase("version")) {
                 if (sender instanceof Player) {
                     final Player player = (Player) sender;
                     if (plugin.hasPermision(player, "nxthealthbar.op")) {
-                        sender.sendMessage(String.format("%sVersion : %s", ChatColor.GREEN, plugin.getDescription().getVersion())); //String.format is gives your plugin a higher performance than adding String with +
+                        sender.sendMessage(String.format("%s版本 : %s", ChatColor.GREEN, plugin.getDescription().getVersion())); //String.format is gives your plugin a higher performance than adding String with +
                         return true;
                     }
                 } else {
-                    sender.sendMessage(String.format("%sVersion : %s", ChatColor.GREEN, plugin.getDescription().getVersion()));
+                    sender.sendMessage(String.format("%版本 : %s", ChatColor.GREEN, plugin.getDescription().getVersion()));
                     return true;
                 }
             }
         } else {
-            sender.sendMessage(String.format("%sValid sub commands", ChatColor.RED));
+            sender.sendMessage(String.format("%s可用子命令", ChatColor.RED));
             sender.sendMessage(String.format("%sreload, version", ChatColor.RED));
         }
         return false;
